@@ -1,3 +1,3 @@
-module cc-guard
+module agent-guard
 
 go 1.23

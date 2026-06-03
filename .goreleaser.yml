@@ -2,7 +2,7 @@ version: 2
 
 builds:
   - main: .
-    binary: cc-guard
+    binary: agent-guard
     goos:
       - linux
       - darwin

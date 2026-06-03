@@ -42,7 +42,7 @@ func main() {
 
 	results, err := trufflehogScan(content)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cc-guard: %v (allowing through)\n", err)
+		fmt.Fprintf(os.Stderr, "agent-guard: %v (allowing through)\n", err)
 		os.Exit(0)
 	}
 
@@ -104,7 +104,7 @@ func redactResponse(raw json.RawMessage) json.RawMessage {
 	}
 	var s string
 	if json.Unmarshal(raw, &s) == nil {
-		redacted, _ := json.Marshal("[REDACTED by cc-guard - credentials detected]")
+		redacted, _ := json.Marshal("[REDACTED by agent-guard - credentials detected]")
 		return redacted
 	}
 	var obj any
@@ -132,7 +132,7 @@ func redactStringsRec(v any, field string) any {
 	switch val := v.(type) {
 	case string:
 		if !safeFields[field] && len(val) > 0 {
-			return "[REDACTED by cc-guard - credentials detected]"
+			return "[REDACTED by agent-guard - credentials detected]"
 		}
 		return val
 	case map[string]any:
@@ -233,7 +233,7 @@ func block(event, reason string, toolResponse json.RawMessage) {
 			},
 		})
 	default:
-		fmt.Fprintf(os.Stderr, "cc-guard: %s\n", reason)
+		fmt.Fprintf(os.Stderr, "agent-guard: %s\n", reason)
 		os.Exit(2)
 		return
 	}
@@ -247,6 +247,6 @@ func block(event, reason string, toolResponse json.RawMessage) {
 }
 
 func die(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, "cc-guard: "+format+"\n", args...)
+	fmt.Fprintf(os.Stderr, "agent-guard: "+format+"\n", args...)
 	os.Exit(1)
 }

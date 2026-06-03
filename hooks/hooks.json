@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/cc-guard",
+            "command": "${CLAUDE_PLUGIN_ROOT}/agent-guard",
             "args": [],
             "timeout": 30
           }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/cc-guard",
+            "command": "${CLAUDE_PLUGIN_ROOT}/agent-guard",
             "args": [],
             "timeout": 30
           }

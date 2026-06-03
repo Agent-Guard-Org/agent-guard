@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="nathanael/cc-guard"
-BINARY="cc-guard"
+REPO="nathanael/agent-guard"
+BINARY="agent-guard"
 DEFAULT_BINDIR="$HOME/.local/bin"
 
 CYAN=""
@@ -26,7 +26,7 @@ warn()  { printf "${YELLOW}warn${RESET} %s\n" "$*" >&2; }
 die()   { printf "${RED} err${RESET} %s\n" "$*" >&2; exit 1; }
 
 USAGE="
-${BOLD}cc-guard install script${RESET}
+${BOLD}agent-guard install script${RESET}
 
 Usage: $(basename "$0") [flags]
 
@@ -249,8 +249,8 @@ EOF
     printf "\n"
     info "the following hooks will be added to ${BOLD}${settings_file}${RESET}:"
     printf "\n"
-    printf "  %sUserPromptSubmit%s → run cc-guard (block if secrets found)\n" "$CYAN" "$RESET"
-    printf "  %sPostToolUse%s      → run cc-guard (block if secrets found)\n" "$CYAN" "$RESET"
+    printf "  %sUserPromptSubmit%s → run agent-guard (block if secrets found)\n" "$CYAN" "$RESET"
+    printf "  %sPostToolUse%s      → run agent-guard (block if secrets found)\n" "$CYAN" "$RESET"
     printf "\n"
 
     if ! prompt_yes "Apply these changes?" "N"; then
@@ -331,10 +331,10 @@ main() {
         info "finding latest version"
         VERSION="$(get_latest_version)" || die "failed to find latest release"
     fi
-    info "installing cc-guard ${VERSION} (${os}/${arch})"
+    info "installing agent-guard ${VERSION} (${os}/${arch})"
 
     download_binary "$VERSION" "$os" "$arch" "$BINDIR"
-    ok "cc-guard installed to ${BINDIR}/${BINARY}"
+    ok "agent-guard installed to ${BINDIR}/${BINARY}"
 
     if [ "$SKIP_TRUFFLEHOG" -eq 0 ]; then
         if ! command -v trufflehog >/dev/null 2>&1; then
@@ -354,7 +354,7 @@ main() {
         if [ -z "$SCOPE" ]; then
             local choice
             choice="$(prompt_choice \
-                "Where should cc-guard hooks be installed?" \
+                "Where should agent-guard hooks be installed?" \
                 "Global (~/.claude/settings.json) — applies to all your projects" \
                 "Project (.claude/settings.json) — current project only" \
                 "Local (.claude/settings.local.json) — current project, gitignored")"
@@ -369,7 +369,7 @@ main() {
     fi
 
     printf "\n"
-    ok "done! cc-guard ${VERSION} is ready."
+    ok "done! agent-guard ${VERSION} is ready."
     if ! echo "$PATH" | grep -q "$BINDIR"; then
         warn "add ${BINDIR} to your PATH if it's not already there"
     fi
