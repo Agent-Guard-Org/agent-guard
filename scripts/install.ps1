@@ -22,7 +22,7 @@
     Hook scope: global, project, or local
 
 .EXAMPLE
-    irm https://raw.githubusercontent.com/nathanael/agent-guard/main/scripts/install.ps1 | iex
+    irm https://raw.githubusercontent.com/nathabonfim59/agent-guard/main/scripts/install.ps1 | iex
 
 .EXAMPLE
     .\install.ps1 -Yes -Scope global
@@ -40,7 +40,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$Repo   = "nathanael/agent-guard"
+$Repo   = "nathabonfim59/agent-guard"
 $Binary = "agent-guard"
 
 if (-not $BinDir) {

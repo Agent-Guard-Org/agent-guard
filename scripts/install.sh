@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="nathanael/agent-guard"
+REPO="nathabonfim59/agent-guard"
 BINARY="agent-guard"
 DEFAULT_BINDIR="$HOME/.local/bin"
 
