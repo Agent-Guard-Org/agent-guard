@@ -21,13 +21,13 @@ For `PostToolUse`, the response is redacted in place rather than dropped — str
 **macOS / Linux**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nathanael/agent-guard/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/nathabonfim59/agent-guard/main/scripts/install.sh | bash
 ```
 
 **Windows** (PowerShell 5.1+)
 
 ```powershell
-irm https://raw.githubusercontent.com/nathanael/agent-guard/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/nathabonfim59/agent-guard/main/scripts/install.ps1 | iex
 ```
 
 Both scripts will:
@@ -51,7 +51,7 @@ Both scripts will:
 Non-interactive global install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nathanael/agent-guard/main/scripts/install.sh | bash -s -- -y --scope global
+curl -fsSL https://raw.githubusercontent.com/nathabonfim59/agent-guard/main/scripts/install.sh | bash -s -- -y --scope global
 ```
 
 **Windows**
