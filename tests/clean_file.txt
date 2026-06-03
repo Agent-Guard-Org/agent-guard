@@ -1,0 +1,4 @@
+hello world
+this is a clean file
+no secrets here
+just regular text
