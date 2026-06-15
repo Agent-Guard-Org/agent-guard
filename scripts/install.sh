@@ -139,7 +139,8 @@ download_binary() {
     local arch="$3"
     local destdir="$4"
 
-    local archive_name="${BINARY}_${version}_${os}_${arch}.tar.gz"
+    local version_no_v="${version#v}"
+    local archive_name="${BINARY}_${version_no_v}_${os}_${arch}.tar.gz"
     local download_url="https://github.com/${REPO}/releases/download/${version}/${archive_name}"
 
     local tmpdir
