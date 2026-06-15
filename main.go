@@ -7,12 +7,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
 type hookInput struct {
 	HookEventName string          `json:"hook_event_name"`
 	Prompt        string          `json:"prompt"`
+	Cwd           string          `json:"cwd"`
 	ToolName      string          `json:"tool_name"`
 	ToolInput     json.RawMessage `json:"tool_input"`
 	ToolResponse  json.RawMessage `json:"tool_response"`
@@ -55,8 +57,8 @@ func main() {
 
 func extractContent(in hookInput) string {
 	switch in.HookEventName {
-	case "UserPromptSubmit":
-		return in.Prompt
+	case "UserPromptSubmit", "UserPromptExpansion":
+		return in.Prompt + mentionedFileContents(in.Prompt, in.Cwd)
 	case "PostToolUse":
 		return extractStrings(in.ToolResponse)
 	case "PreToolUse":
@@ -64,6 +66,43 @@ func extractContent(in hookInput) string {
 	default:
 		return ""
 	}
+}
+
+// @-mentioned files are attached by the harness without a Read tool call,
+// so their contents never pass through Pre/PostToolUse — scan them here.
+var mentionRe = regexp.MustCompile(`(?:^|\s)@([^\s@]+)`)
+
+const maxMentionFileSize = 10 << 20
+
+func mentionedFileContents(prompt, cwd string) string {
+	var sb strings.Builder
+	for _, m := range mentionRe.FindAllStringSubmatch(prompt, -1) {
+		path := strings.TrimRight(m[1], ".,;:!?)\"'`")
+		if path == "" {
+			continue
+		}
+		if path == "~" || strings.HasPrefix(path, "~/") {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				continue
+			}
+			path = filepath.Join(home, strings.TrimPrefix(path, "~"))
+		}
+		if !filepath.IsAbs(path) && cwd != "" {
+			path = filepath.Join(cwd, path)
+		}
+		info, err := os.Stat(path)
+		if err != nil || info.IsDir() || info.Size() > maxMentionFileSize {
+			continue
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			continue
+		}
+		sb.WriteString("\n")
+		sb.Write(data)
+	}
+	return sb.String()
 }
 
 func extractStrings(raw json.RawMessage) string {
@@ -167,7 +206,7 @@ func resolveTrufflehog() string {
 }
 
 func trufflehogScan(content string) ([]trufflehogResult, error) {
-	cmd := exec.Command(resolveTrufflehog(), "stdin", "--json", "--results=verified,unverified,unknown")
+	cmd := exec.Command(resolveTrufflehog(), "stdin", "--json", "--no-update", "--results=verified,unverified,unknown")
 	cmd.Stdin = strings.NewReader(content)
 
 	out, err := cmd.Output()
@@ -209,7 +248,7 @@ func block(event, reason string, toolResponse json.RawMessage) {
 	var err error
 
 	switch event {
-	case "UserPromptSubmit":
+	case "UserPromptSubmit", "UserPromptExpansion":
 		out, err = json.Marshal(map[string]string{
 			"decision": "block",
 			"reason":   reason,
