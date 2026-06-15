@@ -142,7 +142,6 @@ download_binary() {
     local archive_name="${BINARY}_${version}_${os}_${arch}.tar.gz"
     local download_url="https://github.com/${REPO}/releases/download/${version}/${archive_name}"
 
-    local tmpdir
     tmpdir="$(mktemp -d)"
     trap 'rm -rf "$tmpdir"' EXIT
 
