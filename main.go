@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+// Injected at link time by goreleaser/Makefile.
+var (
+	version = "dev"
+	commit  = "unknown"
+	date    = "unknown"
+)
+
 type hookInput struct {
 	HookEventName string          `json:"hook_event_name"`
 	Prompt        string          `json:"prompt"`
@@ -27,6 +34,11 @@ type trufflehogResult struct {
 }
 
 func main() {
+	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
+		fmt.Println(versionInfo())
+		return
+	}
+
 	data, err := io.ReadAll(os.Stdin)
 	if err != nil {
 		die("read stdin: %v", err)
@@ -283,6 +295,10 @@ func block(event, reason string, toolResponse json.RawMessage) {
 
 	fmt.Println(string(out))
 	os.Exit(0)
+}
+
+func versionInfo() string {
+	return fmt.Sprintf("agent-guard version %s (commit: %s, built: %s)", version, commit, date)
 }
 
 func die(format string, args ...any) {

@@ -2,10 +2,47 @@ package main
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 )
+
+func TestVersionInfo(t *testing.T) {
+	version = "1.2.3"
+	commit = "abc123"
+	date = "2026-06-29"
+
+	got := versionInfo()
+	for _, want := range []string{"agent-guard version 1.2.3", "commit: abc123", "built: 2026-06-29"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("versionInfo() = %q, want it to contain %q", got, want)
+		}
+	}
+}
+
+func TestVersionFlag(t *testing.T) {
+	cmd := exec.Command("go", "run", ".", "--version")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("go run . --version: %v\n%s", err, out)
+	}
+	got := strings.TrimSpace(string(out))
+	if !strings.HasPrefix(got, "agent-guard version") {
+		t.Errorf("--version output = %q, want prefix 'agent-guard version'", got)
+	}
+}
+
+func TestShortVersionFlag(t *testing.T) {
+	cmd := exec.Command("go", "run", ".", "-v")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("go run . -v: %v\n%s", err, out)
+	}
+	if !strings.HasPrefix(strings.TrimSpace(string(out)), "agent-guard version") {
+		t.Errorf("-v output = %q, want prefix 'agent-guard version'", out)
+	}
+}
 
 func TestMentionedFileContents(t *testing.T) {
 	dir := t.TempDir()
