@@ -12,12 +12,12 @@ YELLOW=""
 BOLD=""
 RESET=""
 if [ -t 1 ]; then
-    CYAN="\033[36m"
-    GREEN="\033[32m"
-    RED="\033[31m"
-    YELLOW="\033[33m"
-    BOLD="\033[1m"
-    RESET="\033[0m"
+    CYAN=$'\033[36m'
+    GREEN=$'\033[32m'
+    RED=$'\033[31m'
+    YELLOW=$'\033[33m'
+    BOLD=$'\033[1m'
+    RESET=$'\033[0m'
 fi
 
 info()  { printf "${CYAN}info${RESET} %s\n" "$*"; }
